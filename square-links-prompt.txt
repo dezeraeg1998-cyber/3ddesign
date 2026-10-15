@@ -1,0 +1,97 @@
+I sell 3D-printed decor and I need a Square payment link for each of my products so I can put "Buy" buttons on my new website. All of these items already exist in my Square Item Library. Please do the following in my Square account:
+
+WHAT TO DO
+1. For each product in the list below, find the matching item in my Square Item Library. Names in Square may be slightly different or shorter, so match on the animal or shape and the style (for example "Detailed" vs "Geometric", or "Style B" vs "Style C").
+2. Create a payment link for it: Square Dashboard → Payment links → Create link → "Sell items" → pick that item → Create link. Use Square's default settings, so the buyer gets the item's own dropdown to choose a color or option.
+3. Copy the link it gives you (it looks like https://square.link/u/XXXXXXXX).
+
+RULES
+- Do NOT change, delete, or re-price any existing items, and do NOT edit or delete any existing payment links.
+- Skip "3D Printed Cow Head Wall Mount | Rustic Farmhouse Animal Decor". It already has a link.
+- If a payment link already exists for an item, reuse it instead of making a duplicate.
+- If you can't find a matching item, or two Square items could match, do NOT guess. Leave it out of the links and list it under NOT FOUND or UNSURE.
+- If one Square item clearly covers several products below (for example one "Reaching Hand" item whose dropdown includes Styles B–F), you can use the same link for each of them. Say so in the notes.
+- If the Square price is different from the price in my list, still make the link, but note the difference.
+
+WHAT TO GIVE ME BACK
+A plain list in exactly this format, one product per line, using the product names exactly as written below:
+
+Product name | https://square.link/u/XXXXXXXX | Square item name | Square price
+
+Then three short sections:
+- NOT FOUND: products with no matching Square item
+- UNSURE: products where more than one Square item could match (list the candidates)
+- PRICE DIFFERENCES: product, website price, Square price
+
+PRODUCTS (website name — website price)
+1. 3D Printed Dachshund Wall Hanging – Sausage Dog Decor — $30.19
+2. 3D Printed Deer Head Wall Hanging - Modern Home Decor - Wall Art — $34.00
+3. 3D Printed Heart Hands Wall Hanging – Love Decor — $32.72
+4. 3D Printed Pig Head Wall Hanging Decor — $34.59
+5. 3D Printed Pug Wall Hanging – Modern Pet Art Decor — $30.19
+6. 3D Printed Ram Head Wall Mount | Rustic Farmhouse Cabin Decor Bust — $34.00
+7. 3D Printed Sheep Head Wall Mount, Farmhouse Rustic Animal Art, Gift for Sheep Lover — $27.85
+8. 3D Wall Hanging Omni-Face Sculpture — $26.00
+9. Alpaca Head Wall Mount, 3D Printed Animal Sculpture, Whimsical Home Decor — $30.00
+10. Bear Head Wall Mount, 3D Printed Woodland Animal Decor — $30.00
+11. Bunny Geometric Wall Head Modern Decor — $25.00
+12. Bunny Wall Head Modern Decor — $25.00
+13. Discounted Cow Head Wall Mount (Cosmetic Blemish) — $20.00
+14. David (Michelangelo) Elegant Wall Bust - Variety Of Colors Available! — $34.50
+15. Detailed Jackalope Wall Head Home Decor — $32.00
+16. Detailed Owl Bust - Wall Hanging — $30.00
+17. Detailed Sea Turtle Wall Head Modern Decor — $20.00
+18. Double Cup Purple Drink Keychain — $5.25
+19. Freddy Krueger Hand Horror Decor Wall Mount — $29.00
+20. Geometric Bull Head Wall Mount | Faux Taxidermy Farm Animal Decor | 3D Printed Low Poly Bull | Ranch Wall Art — $34.00
+21. Geometric Velociraptor Claws Hand Wall Mountable Reaching Dinosaur — $19.99
+22. Halloween Horror Hands Reaching Wall Mountable Spooky Decor (12-design version) — $9.85
+23. Halloween Horror Hands Reaching Wall Mountable Spooky Decor (10-design version) — $9.85
+24. Hand Bowl Wall Art Home Decor — $28.00
+25. Highland Cow Head Wall Mount, 3D Printed Farmhouse Animal Decor — $30.00
+26. Horror Hands Reaching Wall Mountable Spooky Decor — $9.85
+27. I Love You ASL Hand Wall Hanging Decor — $30.00
+28. Insidious: The Last Key Hand Horror Decor Wall Art — $29.00
+29. Medium Crab Coastal Decor — $34.00
+30. Medium Detailed Bald Eagle Head Wall Art Modern Decor — $23.00
+31. Medium Detailed Bull Wall Head Modern Decor — $34.00
+32. Medium Detailed Giraffe Wall Head Modern Decor — $34.00
+33. Medium Detailed Gorilla Head Modern Decor — $34.00
+34. Medium Detailed Monkey Wall Head Modern Decor — $34.00
+35. Medium Detailed Rhino Wall Decoration - Rhinosaurus — $30.19
+36. Medium Detailed Stingray Wall Head Modern Decor — $37.00
+37. Medium Detailed Triceratops Wall Head Modern Decor — $34.00
+38. Medium Detailed Tyrannosaurus Rex Wall Head Modern Decor — $34.00
+39. Medium Geometric Cow Wall Head Modern Decor — $34.00
+40. Medium Geometric Giraffe Wall Mountable Head Decor — $34.00
+41. Medium Geometric Gorilla Head Modern Decor — $34.00
+42. Medium Geometric Hippo Wall Head Modern Decor — $34.00
+43. Medium Geometric Monkey Wall Head Modern Decor — $34.00
+44. Medium Geometric Ram Wall Head Modern Decor — $34.00
+45. Medium Geometric Rhino Wall Head Modern Decor — $34.00
+46. Medium Geometric Shark Wall Mountable Head Decor — $34.00
+47. Medium Geometric Triceratops Wall Head Modern Decor — $34.00
+48. Medium Hippo Wall Hanging Art Decoration Display Piece — $30.19
+49. Mummy Reaching Wall Hand Scary Home Decor — $36.00
+50. Peace Hand Wall Art Home Decor — $24.00
+51. Pop Art Banana With Banana In Writing - Modern Decoration - Model By @DrFemPop — $19.45
+52. Reaching Hand Wall Mountable Horror Style B — $20.99
+53. Reaching Hand Wall Mountable Style C — $16.99
+54. Reaching Hand Wall Mountable Style D — $23.99
+55. Reaching Hand Wall Mountable Style E — $17.99
+56. Reaching Hand Wall Mountable Style F — $18.99
+57. Realistic Ok Wall Hand Home Decor Art — $26.00
+58. Rock 'n' Roll Hand Wall Art Home Decor — $26.00
+59. Rooster Geometric Wall Head Home Decor — $22.00
+60. Rooster Wall Head Home Decor — $22.00
+61. Screaming in 3D: Handcrafted Human Screaming Face — $26.00
+62. Spooky Wall Cloth Hand Reaching Halloween Decor — $24.99
+63. Starfish Wall Hanging Oceanic Decoration - Seascape Your Space! — $14.50
+64. Thumbs Up Hand Wall Art Home Decor — $22.00
+65. Wall Hanging "Hang Loose" Hand — $34.00
+66. Wall Hanging Flamingo Decoration — $25.00
+67. Water/Fire/Air Rabbit Hanging Decoration — $25.00
+68. Whimsical Unicorn Head Wall Hanging – Mystical Home Decor — $24.99
+69. Witch Hand Spooky Home Reaching Wall Decor Realistic — $26.00
+70. Yorkshire Yorkie Terrier Wall Hanging Bust - Dog Wall Art — $30.85
+71. Zombie Wall Hand Reaching Horror Home Decor — $23.00
