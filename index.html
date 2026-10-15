@@ -137,7 +137,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 // EDIT YOUR PRODUCTS HERE.
 // shape:     preview shape used until you have a real 3D file
 // model:     optional path to a .glb file (e.g. "models/vase.glb")
-// stripeUrl: optional Stripe Payment Link for this product
+// squareUrl: optional Square payment link for this product
 // ---------------------------------------------------------------
 const PRODUCTS = [
   { id: "custom-design", name: "Custom 3D Design", category: "Design Services", price: 149,
@@ -167,9 +167,13 @@ const PRODUCTS = [
 ];
 
 const CHECKOUT = {
-  // Set to a Stripe Payment Link to send the whole cart there, or leave empty
-  // to have orders emailed to you instead.
-  stripeUrl: "",
+  // PayPal: put the email of your PayPal Business account here and the whole
+  // cart is sent to PayPal checkout (customers can pay by card or PayPal).
+  paypalEmail: "",
+  currency: "USD",
+  // Square: give a product a squareUrl (a Square payment link) and a cart
+  // holding only that product goes to Square checkout.
+  // With neither set up, orders are emailed to you instead.
   email: "orders@example.com",
 };
 
@@ -343,10 +347,26 @@ function renderCart() {
   $("checkout").disabled = !ids.length;
 }
 
+function paypalCheckout(ids) {
+  const form = document.createElement("form");
+  form.method = "POST"; form.action = "https://www.paypal.com/cgi-bin/webscr";
+  const fields = { cmd: "_cart", upload: "1", business: CHECKOUT.paypalEmail,
+    currency_code: CHECKOUT.currency, return: location.href.split("#")[0] + "#thanks" };
+  ids.forEach((id, i) => {
+    fields[`item_name_${i + 1}`] = byId[id].name;
+    fields[`amount_${i + 1}`] = byId[id].price.toFixed(2);
+    fields[`quantity_${i + 1}`] = cart[id];
+  });
+  for (const [k, v] of Object.entries(fields)) {
+    const input = document.createElement("input"); input.type = "hidden"; input.name = k; input.value = v; form.appendChild(input);
+  }
+  document.body.appendChild(form); form.submit();
+}
+
 $("checkout").onclick = () => {
   const ids = Object.keys(cart).filter(id => byId[id]);
-  if (ids.length === 1 && byId[ids[0]].stripeUrl) return location.href = byId[ids[0]].stripeUrl;
-  if (CHECKOUT.stripeUrl) return location.href = CHECKOUT.stripeUrl;
+  if (CHECKOUT.paypalEmail) return paypalCheckout(ids);
+  if (ids.length === 1 && cart[ids[0]] === 1 && byId[ids[0]].squareUrl) return location.href = byId[ids[0]].squareUrl;
   const lines = ids.map(id => `${cart[id]} × ${byId[id].name} — ${money(byId[id].price * cart[id])}`);
   const body = `Hi! I'd like to order:\n\n${lines.join("\n")}\n\nTotal: ${$("total").textContent}\n\nName:\nShipping address:\n`;
   location.href = `mailto:${CHECKOUT.email}?subject=${encodeURIComponent("New order")}&body=${encodeURIComponent(body)}`;
@@ -363,6 +383,7 @@ $("modal").onclick = (e) => { if (e.target.id === "modal") closeAll(); };
 document.querySelectorAll("[data-close]").forEach(b => b.onclick = closeAll);
 addEventListener("keydown", (e) => e.key === "Escape" && closeAll());
 
+if (location.hash === "#thanks") { cart = {}; save(); history.replaceState(null, "", location.pathname); alert("Thank you for your order! We'll be in touch soon."); }
 renderFilters(); renderGrid(); renderCart();
 </script>
 </body>
