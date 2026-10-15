@@ -135,8 +135,9 @@
   <div class="head"><strong>Your cart</strong><button class="close" data-close aria-label="Close">×</button></div>
   <div class="items" id="items"></div>
   <div class="foot">
-    <div class="total"><span>Subtotal</span><span id="total">$0.00</span></div>
-    <span class="hint">Shipping and tax are added at checkout.</span>
+    <div class="hint" style="display:flex;justify-content:space-between"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+    <div class="hint" style="display:flex;justify-content:space-between"><span>Shipping (flat rate)</span><span id="ship">$0.00</span></div>
+    <div class="total"><span>Total</span><span id="total">$0.00</span></div>
     <button class="checkout" id="checkout">Check out with PayPal</button>
   </div>
 </aside>
@@ -148,6 +149,7 @@
 const CHECKOUT = {
   paypalEmail: "daily3dprintingoffical@gmail.com", // payments go to this PayPal account
   currency: "USD",
+  shipping: 6.00, // flat shipping per order, in dollars
   contactEmail: "daily3dprintingoffical@gmail.com",
 };
 
@@ -238,7 +240,8 @@ const optText = (line) => line.opts.map(([n, v]) => `${n}: ${v}`).join(", ");
 function renderCart() {
   const lines = Object.entries(cart);
   $("cartCount").textContent = lines.reduce((s, [, l]) => s + l.qty, 0);
-  $("total").textContent = money(lines.reduce((s, [, l]) => s + byId[l.id].price * l.qty, 0));
+  const sub = lines.reduce((s, [, l]) => s + byId[l.id].price * l.qty, 0), ship = lines.length ? CHECKOUT.shipping : 0;
+  $("subtotal").textContent = money(sub); $("ship").textContent = money(ship); $("total").textContent = money(sub + ship);
   $("items").innerHTML = lines.length ? "" : `<div class="empty">Your cart is empty.</div>`;
   for (const [key, l] of lines) {
     const p = byId[l.id], row = document.createElement("div"); row.className = "line";
@@ -258,7 +261,7 @@ $("checkout").onclick = () => {
   const form = document.createElement("form");
   form.method = "POST"; form.action = "https://www.paypal.com/cgi-bin/webscr";
   const fields = { cmd: "_cart", upload: "1", business: CHECKOUT.paypalEmail, currency_code: CHECKOUT.currency,
-    no_shipping: "2", return: location.href.split("#")[0] + "#thanks", cancel_return: location.href.split("#")[0] };
+    no_shipping: "2", handling_cart: CHECKOUT.shipping.toFixed(2), return: location.href.split("#")[0] + "#thanks", cancel_return: location.href.split("#")[0] };
   Object.values(cart).forEach((l, i) => {
     const p = byId[l.id], opts = optText(l);
     fields[`item_name_${i + 1}`] = (p.name + (opts ? ` (${opts})` : "")).slice(0, 127);
