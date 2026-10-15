@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ff6a2b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="3D Shop">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>3D Design and Supply</title>
 <meta name="description" content="3D-printed wall art, animal heads, hands and home decor, made to order in your color.">
 <style>
@@ -88,6 +95,23 @@
 
   .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--text); color: var(--bg);
     padding: 12px 20px; border-radius: 12px; z-index: 40; display: none; }
+  header { padding-top: env(safe-area-inset-top); }
+  .drawer .foot { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+  .install { display: none; position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 15;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 14px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.18); align-items: center; gap: 12px; max-width: 520px; margin: 0 auto; }
+  .install.show { display: flex; }
+  .install img { width: 44px; height: 44px; border-radius: 10px; }
+  .install .txt { flex: 1; font-size: .88rem; }
+  .install .go { background: var(--accent); color: var(--accent-text); border: 0; border-radius: 10px; padding: 8px 14px; font-weight: 700; white-space: nowrap; }
+  .install .x { background: none; border: 0; font-size: 1.3rem; color: var(--muted); }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .hero { padding: 28px 0 4px; } .hero p { font-size: 1rem; }
+    .filters { flex-wrap: nowrap; overflow-x: auto; margin: 0 -16px; padding: 0 16px; scrollbar-width: none; }
+    .chip { white-space: nowrap; } .search { width: 100%; }
+    .card h3 { font-size: .88rem; } .card .body { padding: 10px; }
+  }
   footer { border-top: 1px solid var(--border); padding: 24px 0; color: var(--muted); font-size: .9rem; }
   footer a { color: inherit; }
 </style>
@@ -143,6 +167,13 @@
 </aside>
 
 <div class="toast" id="toast"></div>
+
+<div class="install" id="install">
+  <img src="icons/icon-192.png" alt="">
+  <div class="txt"><strong>Get the 3D Shop app</strong><div class="hint" id="installHint">Add it to your home screen for quick shopping.</div></div>
+  <button class="go" id="installGo">Install</button>
+  <button class="x" id="installX" aria-label="Dismiss">×</button>
+</div>
 
 <script src="products.js"></script>
 <script>
@@ -291,6 +322,27 @@ document.addEventListener("error", (e) => {
   if (img.tagName === "IMG" && /\/il_(?!fullxfull)[^.]+\./.test(img.src)) img.src = img.src.replace(/\/il_[^.]+\./, "/il_fullxfull.");
 }, true);
 renderFilters(); renderGrid(); renderCart();
+
+// ---------- install as a phone app ----------
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+(() => {
+  const installed = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  let dismissed = false; try { dismissed = localStorage.getItem("installDismissed") === "1"; } catch {}
+  if (installed || dismissed) return;
+  const bar = $("install");
+  $("installX").onclick = () => { bar.classList.remove("show"); try { localStorage.setItem("installDismissed", "1"); } catch {} };
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (isIOS) {
+    $("installHint").innerHTML = "Tap the <strong>Share</strong> button, then <strong>Add to Home Screen</strong>.";
+    $("installGo").style.display = "none";
+    setTimeout(() => bar.classList.add("show"), 1500);
+    return;
+  }
+  let prompt = null;
+  addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); prompt = e; bar.classList.add("show"); });
+  $("installGo").onclick = async () => { if (!prompt) return; prompt.prompt(); await prompt.userChoice; prompt = null; bar.classList.remove("show"); };
+  addEventListener("appinstalled", () => bar.classList.remove("show"));
+})();
 </script>
 </body>
 </html>
