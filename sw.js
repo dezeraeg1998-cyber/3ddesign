@@ -1,6 +1,6 @@
 // Keeps the shop working offline: tries the network first, falls back to the cached copy.
-const CACHE = "shop-v1";
-const SHELL = ["./", "index.html", "products.js", "manifest.webmanifest", "icons/icon-192.png"];
+const CACHE = "shop-v2";
+const SHELL = ["./", "index.html", "products.js", "manifest.webmanifest", "icons/icon-192.png", "icons/logo.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)));
