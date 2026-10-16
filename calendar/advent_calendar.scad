@@ -1,19 +1,23 @@
-// Refillable advent calendar: 24 pull-out drawers in six 2x2 frame modules.
+// Refillable advent calendar: 24 pull-out drawers or hinged doors in six 2x2
+// frame modules.
 //
 // Every size below is a parameter. Change what you like, then export the part
 // you want with the `part` setting (or run calendar/export.sh to rebuild all STLs).
 //
 // Print orientation is baked into each part, so exported STLs are ready to slice
 // with no supports:
-//   module  - back face down, drawer openings facing up
+//   module  - back face down, openings facing up
 //   drawer  - open top facing up, number face vertical
+//   door    - lying flat, number face up
 //   key     - lying flat
 //   hanger  - flat tab down, fin pointing up
 
 /* [Output] */
 // Which part to render
-part = "assembly"; // [assembly, module, drawer, key, hanger, plate_drawers]
-// Number on the drawer when part = "drawer"
+part = "assembly"; // [assembly, module, drawer, door, key, hanger, plate_drawers]
+// Drawers that pull out, or doors that swing open. Each needs its own frame modules.
+style = "drawers"; // [drawers, doors]
+// Number on the drawer or door when part = "drawer" or "door"
 drawer_number = 1; // [1:24]
 
 /* [Drawer inside space (mm)] */
@@ -52,7 +56,16 @@ key_neck  = 6;       // width at the seam
 key_wide  = 9;       // width at the deepest point
 key_depth = 2;       // how far the key reaches into each module
 key_clr   = 0.2;     // printed key is this much smaller per face
-key_front_stop = 2;  // slots stop this far short of the front
+key_front_stop = 5;  // slots stop this far short of the front
+
+/* [Door hinge (doors style only, mm)] */
+door_t       = 3;    // door thickness; the hinge pins match it
+pin_len      = 1.4;  // hinge pin length at top and bottom of the door
+pin_clr      = 0.2;  // extra room around each pin in its hole
+door_side    = 0.4;  // gap at the hinge and free edges
+door_top_gap = 2.0;  // room above the door to lift it onto its pins
+click_r      = 1.2;  // radius of the click bump under the door's free end
+click_h      = 0.9;  // how far the bump sticks out below the door
 
 /* [Hanger] */
 hanger_w    = 30;
@@ -82,6 +95,14 @@ panel_w   = pitch_x - panel_gap;
 panel_h   = pitch_y - panel_gap;
 assert(panel_w > open_w && panel_h > open_h, "panel_gap too big: fronts must overlap the openings");
 key_len   = frame_d - key_front_stop - 0.5;
+door_w    = open_w - 2 * door_side;
+door_h    = open_h - door_top_gap;
+hinge_r   = door_t / 2;
+pin_hole  = door_t + 2 * pin_clr;
+top_hole  = 2 * pin_len + 0.2;         // deep enough to lift the door onto its pins
+bot_hole  = pin_len + 0.3;
+click_x   = door_w - 6;                // bump position along the door's bottom edge
+assert(top_hole < divider / 2, "hinge pins too long for the outer frame wall");
 
 echo(str("Drawer inside: ", inner_w, " x ", inner_h, " x ", inner_d, " mm"));
 echo(str("Module: ", mod_w, " x ", mod_h, " x ", frame_d, " mm"));
@@ -109,8 +130,10 @@ module frame_module() {
         for (c = [0 : cols_per_module - 1], r = [0 : rows_per_module - 1])
             translate([(c + 0.5) * pitch_x - open_w / 2,
                        (r + 0.5) * pitch_y - open_h / 2,
-                       back_t])
+                       back_t]) {
                 cube([open_w, open_h, frame_d]);
+                if (style == "doors") door_cuts();
+            }
         // dovetail slots, one centred on each outer face
         slot_len = frame_d - key_front_stop + 1;
         translate([mod_w / 2, mod_h, -1])
@@ -122,7 +145,24 @@ module frame_module() {
         translate([mod_w, mod_h / 2, -1])
             linear_extrude(slot_len) rotate(-90) half_key_2d(key_neck, key_wide, key_depth);
     }
-    // click-shut ridges, 45 degree sides so they print on the vertical floor
+    if (style == "drawers") drawer_ridges();
+    if (style == "doors") door_stops();
+}
+
+// A rib behind each door's free edge so it can't be pushed into the cubby.
+// 45 degree underside, so it prints on the vertical side wall.
+module door_stops() {
+    zf = frame_d - door_t - 0.1;
+    for (c = [0 : cols_per_module - 1], r = [0 : rows_per_module - 1])
+        translate([(c + 0.5) * pitch_x + open_w / 2,
+                   (r + 0.5) * pitch_y - open_h / 2,
+                   0])
+            rotate([-90, 0, 0]) linear_extrude(open_h)
+                polygon([[eps, -zf], [-1.2, -zf], [eps, -(zf - 1.2)]]);
+}
+
+// Click-shut ridges, 45 degree sides so they print on the vertical floor.
+module drawer_ridges() {
     for (c = [0 : cols_per_module - 1], r = [0 : rows_per_module - 1])
         translate([(c + 0.5) * pitch_x - open_w / 2,
                    (r + 0.5) * pitch_y - open_h / 2,
@@ -163,6 +203,55 @@ module number(n, depth) {
                  halign = "center", valign = "center");
 }
 
+// ---------- door ----------
+// Hinge holes, click dimple and lead-in chamfer for one opening. Origin is the
+// opening's bottom-left corner at the back wall, as in frame_module().
+module door_cuts() {
+    hx = door_side + hinge_r;
+    hz = frame_d - back_t - hinge_r;
+    // horizontal holes when printing, so teardrop-shaped with the point up
+    translate([hx, open_h - eps, hz]) rotate([-90, 0, 0])
+        linear_extrude(top_hole + eps) teardrop_2d(pin_hole / 2);
+    translate([hx, eps, hz]) rotate([90, 0, 0])
+        linear_extrude(bot_hole + eps) rotate(180) teardrop_2d(pin_hole / 2);
+    // dimple the bump drops into when the door shuts
+    translate([door_side + click_x, click_r - click_h, hz])
+        sphere(r = click_r + 0.15, $fn = 24);
+}
+
+module teardrop_2d(r) {
+    // point toward -y here; the callers rotate it to face up in the print
+    hull() { circle(r = r, $fn = 32); translate([0, -r * sqrt(2) + 0.05]) square(0.1, center = true); }
+}
+
+// Built for printing: back face on z = 0, number face up, hinge along x = 0.
+module door(n) {
+    difference() {
+        union() {
+            translate([hinge_r, 0, 0]) cube([door_w - hinge_r, door_h, door_t]);
+            translate([hinge_r, 0, hinge_r]) rotate([-90, 0, 0]) cylinder(r = hinge_r, h = door_h);
+            // hinge pins
+            translate([hinge_r, -pin_len, hinge_r]) rotate([-90, 0, 0])
+                cylinder(d = door_t, h = door_h + 2 * pin_len);
+            // click bump under the free end
+            translate([click_x, click_r - click_h, hinge_r])
+                intersection() { sphere(r = click_r, $fn = 24); translate([0, -click_r, 0]) cube(2 * click_r, center = true); }
+        }
+        // finger notch in the free edge
+        translate([door_w, door_h / 2, -1]) cylinder(r = pull_r * 0.8, h = door_t + 2);
+        if (number_depth > 0) door_number(n, number_depth + 1);
+    }
+    if (number_depth < 0) door_number(n, -number_depth);
+}
+
+module door_number(n, depth) {
+    z0 = number_depth > 0 ? door_t - number_depth : door_t;
+    translate([(door_w - pull_r * 0.8) / 2 + hinge_r, door_h / 2, z0])
+        linear_extrude(depth)
+            text(str(n), size = number_size, font = number_font,
+                 halign = "center", valign = "center");
+}
+
 // ---------- key and hanger ----------
 module key() {
     // lying flat: the key's length runs along x
@@ -192,11 +281,20 @@ module assembly() {
                 gc = mx * cols_per_module + c;
                 gr = (modules_y * rows_per_module - 1) - (my * rows_per_module + r);
                 n = gr * modules_x * cols_per_module + gc + 1;
-                translate([(c + 0.5) * pitch_x,
-                           (r + 0.5) * pitch_y - open_h / 2,
-                           frame_d + front_t])
-                    rotate([-90, 0, 0])
-                        color(n % 2 ? "FireBrick" : "ForestGreen") drawer(n);
+                if (style == "drawers")
+                    translate([(c + 0.5) * pitch_x,
+                               (r + 0.5) * pitch_y - open_h / 2,
+                               frame_d + front_t])
+                        rotate([-90, 0, 0])
+                            color(n % 2 ? "FireBrick" : "ForestGreen") drawer(n);
+                else
+                    // door 24 is shown swung open
+                    translate([(c + 0.5) * pitch_x - open_w / 2 + door_side + hinge_r,
+                               (r + 0.5) * pitch_y - open_h / 2,
+                               frame_d - hinge_r])
+                        rotate([0, n == open_door ? -100 : 0, 0])
+                            translate([-hinge_r, 0, -hinge_r])
+                                color(n % 2 ? "FireBrick" : "ForestGreen") door(n);
             }
         }
     for (mx = [0 : modules_x - 1])
@@ -211,7 +309,10 @@ module plate_drawers() {
             drawer(drawer_number + i);
 }
 
+open_door = 24;
+
 if (part == "assembly")      assembly();
+else if (part == "door")     door(drawer_number);
 else if (part == "module")   frame_module();
 else if (part == "drawer")   drawer(drawer_number);
 else if (part == "key")      key();

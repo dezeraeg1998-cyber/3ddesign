@@ -1,10 +1,15 @@
 # Refillable 3D-printed advent calendar
 
-24 pull-out drawers in a wall-hangable frame. Fill the drawers, hang it up, and
-refill it again next year. Every part prints without supports and fits a
-220 × 220 mm bed.
+24 numbered drawers or hinged doors in a wall-hangable frame. Fill it, hang it
+up, and refill it again next year. Every part prints without supports and fits
+a 220 × 220 mm bed.
 
-![Assembled calendar](preview.png)
+There are two versions that share the same frame size, keys and hangers:
+
+| Drawers | Hinged doors |
+| --- | --- |
+| ![Drawer version](preview.png) | ![Door version](preview_doors.png) |
+| Drawers pull out, so they're the easiest to fill. | Doors swing open on pin hinges and click shut. The cubbies are a little roomier. |
 
 ## What's in this folder
 
@@ -12,8 +17,10 @@ refill it again next year. Every part prints without supports and fits a
 | --- | --- |
 | `advent_calendar.scad` | The parametric model. Open in [OpenSCAD](https://openscad.org) to change sizes. |
 | `export.sh` | Rebuilds every STL and the preview from the model. |
-| `stl/frame_module.stl` | One 2 × 2 frame block. |
+| `stl/frame_module.stl` | One 2 × 2 frame block for the drawer version. |
 | `stl/drawer_01.stl` … `drawer_24.stl` | The numbered drawers. |
+| `stl/doors/frame_module_doors.stl` | One 2 × 2 frame block for the door version, with hinge holes. |
+| `stl/doors/door_01.stl` … `door_24.stl` | The numbered doors. |
 | `stl/key.stl` | Dovetail key that locks two frame blocks together. |
 | `stl/hanger.stl` | Wall hanger tab that slides into the top of the frame. |
 
@@ -22,7 +29,9 @@ refill it again next year. Every part prints without supports and fits a
 | | Size |
 | --- | --- |
 | Space inside each drawer | 50 W × 52 H × 50 D mm |
+| Space inside each door cubby | 54 W × 54 H × 49 D mm |
 | Drawer front | 56.5 × 56.5 mm |
+| Door | 53 × 52 mm, 3 mm thick |
 | Frame block | 122 × 122 × 54 mm |
 | Whole calendar | 366 W × 244 H × 57 D mm (plus hanger tabs above) |
 
@@ -30,13 +39,14 @@ refill it again next year. Every part prints without supports and fits a
 
 | Part | Quantity |
 | --- | --- |
-| Frame module | 6 |
-| Drawer | 24 (one of each number) |
+| Frame module (drawer or door version) | 6 |
+| Drawer or door | 24 (one of each number) |
 | Key | 7, plus 1 spare |
 | Hanger | 3 (one per top block; 2 is enough on a sturdy screw) |
 
-Rough filament use is about 1.4 kg of PLA at the settings below. Your slicer
-will give the exact figure.
+Rough filament use is about 1.4 kg of PLA for the drawer version and about
+0.9 kg for the door version, at the settings below. Your slicer will give the
+exact figure.
 
 ## Print settings
 
@@ -58,6 +68,8 @@ The STLs are already in print orientation, so just drop them on the plate.
 - **Frame modules** print on their back, with the four openings facing up.
 - **Drawers** print standing on their bottom, open top up. The number faces
   sideways, so it comes out crisp. About four fit on one plate.
+- **Doors** print lying flat with the number facing up. The hinge pins on the
+  top and bottom of the hinge edge sit on the bed too.
 - **Keys** print lying flat.
 - **Hangers** print with the flat tab on the bed and the fin pointing up.
 
@@ -83,6 +95,21 @@ the preview shows.
    back, so its tab stands up above the frame flush with the back.
 5. Stand the calendar up, fill the drawers and slot them in. Any drawer fits
    any opening.
+
+### Fitting the doors (door version)
+
+Doors hinge on the left. To fit one:
+
+1. Hold the door in its opening and push its top pin up into the hole in the
+   top of the opening. There's room above the door for this.
+2. With the door lifted, swing its bottom in and let it drop so the bottom pin
+   falls into the hole in the floor.
+3. Swing it shut. A small bump under the door's free end lifts the door as it
+   closes and drops into a dimple in the floor, so it clicks shut and stays
+   closed. A rib behind the free edge stops it from being pushed inward.
+
+Open a door by hooking a finger in the notch on its right edge. To take a door
+off, open it, lift it and tilt the bottom out.
 6. Hang it from screws or nails through the hanger holes (4.5 mm). The calendar
    weighs roughly 1.5 kg empty, so use wall plugs in plasterboard.
 
@@ -109,11 +136,14 @@ the values at the top of the file. The ones you're most likely to change:
 | Parameter | Default | What it does |
 | --- | --- | --- |
 | `inner_w`, `inner_h`, `inner_d` | 50, 52, 50 | Space inside each drawer. Everything else resizes to match. |
+| `style` | drawers | `drawers` or `doors`. Picks which frame module and parts you get. |
 | `clearance` | 0.4 | Gap around each drawer. Raise to 0.5 if drawers stick. |
 | `detent_h` | 0.5 | Height of the click-shut ridge. 0 turns it off. |
 | `number_depth` | 1.0 | Recess depth of the numbers; negative makes them raised. |
 | `number_font`, `number_size` | Liberation Sans Bold, 24 | Number style. |
 | `panel_gap` | 4.5 | How much frame shows between drawer fronts. |
+| `pin_clr` | 0.2 | Extra room around each door hinge pin. |
+| `click_h` | 0.9 | How far the door's click bump sticks out. 0 turns it off. |
 
 After changing anything, run `./export.sh` to rebuild all the STLs, or pick a
 `part` in the Customizer and export it with F6 then F7. The console prints the
@@ -126,5 +156,8 @@ new overall size. Check that a frame module still fits your printer bed.
   compensation" in your slicer fixes it).
 - **Drawers don't click shut:** raise `detent_h` to 0.7. Don't go above
   `2 × clearance`, or the drawer can't lift over the ridge.
+- **Doors bind or squeak:** raise `pin_clr` to 0.3. If a door won't stay
+  shut, raise `click_h` to 1.1. Reprint only the doors for the click and only
+  the frame modules for the pins.
 - **Keys too tight or loose:** adjust `key_clr` (default 0.2) and reprint only
   the keys.
