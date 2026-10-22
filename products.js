@@ -444,6 +444,40 @@ window.PRODUCTS = [
   ]
  },
  {
+  "id": "detailed-bison-wall-head-modern-decor",
+  "name": "Detailed Bison Wall Head Modern Decor",
+  "category": "Animal Heads",
+  "price": 34.0,
+  "desc": "Upgrade your space with a rustic touch and decorate with this amazing bison sculpture. Realistic bison head sculpture for wall mounting, made with 3D printing technique. Available in a large selection of colors, choose the color according to the statement you want to make. The buffalo, bison is a living example of the American culture and makes a great farmhouse, country, rustic interior decoration. The wildlife animal will make a great choice for any true patriot or just a simple animal lover, no matter the purpose it will be a striking addition to your space.\nCool, unusual interior decoration, that will make a statement no matter where displayed. Hang it by the entryway, use it as a living room, bedroom, kitchen décor, office ornament, etc. Buy it for yourself or gift it, makes a great gift for so many occasions for those who like unusual and decorative pieces, great as a Christmas, birthday, housewarming, animal lover gift.\nAll my 3D-printed items are made from environmentally friendly materials. We use PLA for printing the products, which is a vegetal and environmental-friendly material, a bioplastic that is plant-based. PLA is a renewable thermoplastic and a polymer. It is ‘processed’ from the starch of plants such as corn, sugar cane, and sugar beet, making it eco-friendly and sustainable.\n\nDesign attribution - Guninnik\n\nABOUT\n• 3D printed Bison head\n• Wall hanging decoration\n• Realistic finish\n• Available in a selection of cool colors ( Brown shown in photos)\n• Can be hung using a nail, screw, thumbtack, or command strips (Hanging hardware not included)\n• Made with a modern printing technique\n• 3D Printed using high-quality PLA material\n• Eco friendly, a plant-based plastic\n• Strong, sturdy plastic\n• Printed colors may vary slightly between the screen and the actual product due to your screen settings\n• Hand measurements\n-Height: 8.75 inches\n-Width: 7 inches\n-Depth: 5.25 inches\n• I can custom make different measurements\n• Made on order, ready to ship in 3-5 working days\n• If you have any questions, please contact me",
+  "images": [
+   "https://items-images-production.s3.us-west-2.amazonaws.com/files/313ed0d14271697a983805b1cb3c6fa5241cc563/original.jpeg",
+   "https://items-images-production.s3.us-west-2.amazonaws.com/files/f08c9e1ddd09ec0f9bf9b38ece7f1c0e4c04ad1e/original.jpeg",
+   "https://items-images-production.s3.us-west-2.amazonaws.com/files/7b907e49d49319fc01268a8c1422f5ebebc97ba5/original.jpeg"
+  ],
+  "options": [
+   {
+    "name": "Primary color",
+    "values": [
+     "Beige",
+     "Black",
+     "Blue",
+     "Brown",
+     "Copper",
+     "Gold",
+     "Gray",
+     "Green",
+     "Orange",
+     "Pink",
+     "Purple",
+     "Red",
+     "Silver",
+     "White",
+     "Yellow"
+    ]
+   }
+  ]
+ },
+ {
   "id": "bear-head-wall-mount-3d-printed-woodland-animal-decor",
   "name": "Bear Head Wall Mount, 3D Printed Woodland Animal Decor",
   "category": "Animal Heads",
