@@ -458,10 +458,21 @@ window.PRODUCTS = [
    {
     "name": "Primary color",
     "values": [
+     "Beige",
+     "Black",
      "Blue",
      "Brown",
+     "Copper",
+     "Gold",
      "Gray",
-     "Red"
+     "Green",
+     "Orange",
+     "Pink",
+     "Purple",
+     "Red",
+     "Silver",
+     "White",
+     "Yellow"
     ]
    }
   ]
