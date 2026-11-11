@@ -18,7 +18,7 @@
   '.dd-cart-list{flex:1;overflow-y:auto;padding:8px 20px}.dd-cart-empty{text-align:center;padding:40px 0;opacity:.7}'+
   '.dd-ci{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(30,27,24,.12)}'+
   '.dd-ci img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:2px solid var(--dd-ink);background:#fff}'+
-  '.dd-ci a{color:inherit;text-decoration:none;font-weight:700;line-height:1.2;display:block}.dd-ci small{opacity:.7}'+
+  '.dd-ci a{color:inherit;text-decoration:none;font-weight:700;line-height:1.2;display:block}.dd-ci small{display:block;opacity:.7;margin-top:4px}'+
   '.dd-qty{display:inline-flex;align-items:center;gap:8px;margin-top:6px}.dd-qty button{width:28px;height:28px;border:2px solid var(--dd-ink);border-radius:8px;background:#fff;cursor:pointer;font-weight:700}'+
   '.dd-ci-r{text-align:right;font-weight:700}.dd-ci-r button{display:block;margin-top:6px;border:0;background:none;color:inherit;opacity:.6;text-decoration:underline;cursor:pointer;font-size:13px}'+
   '.dd-cart-f{padding:18px 20px;border-top:2px solid var(--dd-ink)}.dd-cart-row{display:flex;justify-content:space-between;font-weight:700;font-size:18px}.dd-cart-note{font-size:14px;opacity:.75;margin:4px 0 14px}'+
@@ -49,7 +49,8 @@
   d.addEventListener('keydown',function(e){if(e.key==='Escape')open(false);});
 
   function render(){
-    var c=load(),n=0,t=0,h='';
+    var c=load(),n=0,t=0,h='',lg=d.querySelector('.nav-logo img'),ls=lg?(lg.currentSrc||lg.src):'';
+    c.forEach(function(x){if(x.img&&(x.img===ls||(lg&&x.img===lg.src)))x.img='';});
     c.forEach(function(x,i){n+=x.qty;t+=x.price*x.qty;
       h+='<div class="dd-ci"><img alt="" src="'+esc(x.img||'')+'"><div><a href="'+esc(x.url||'#')+'">'+esc(x.name)+'</a><small>'+esc(x.variant)+'</small><div class="dd-qty"><button type="button" data-i="'+i+'" data-d="-1" aria-label="Less">−</button><span>'+x.qty+'</span><button type="button" data-i="'+i+'" data-d="1" aria-label="More">+</button></div></div><div class="dd-ci-r">'+money(x.price*x.qty)+'<button type="button" data-r="'+i+'">Remove</button></div></div>';});
     list.innerHTML=h||'<div class="dd-cart-empty">Your cart is empty.</div>';
@@ -75,7 +76,8 @@
   fetch(API+'/item?id='+encodeURIComponent(id)).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(it){
     var vs=it.variations||[];if(!vs.length)return;
     var name=(d.querySelector('h1')||{}).textContent||it.name;
-    var imgEl=d.querySelector('main img, .w-dyn-item img, img[src*="website-files"]');
+    /* product photo: the largest image on the page outside the header */
+    var imgEl=null,best=0;d.querySelectorAll('img').forEach(function(im){if(im.closest('.nav,.announce-bar,footer,.dd-cart'))return;var r=im.getBoundingClientRect(),a=r.width*r.height;if(a>best){best=a;imgEl=im;}});
     var opts=vs.map(function(v,i){return '<option value="'+i+'">'+esc(v.name)+(vs.some(function(o){return o.price!==v.price;})?' – '+money(v.price):'')+'</option>';}).join('');
     slot.className='dd-add';
     slot.innerHTML=(vs.length>1?'<label for="dd-var">Choose your option</label><select id="dd-var">'+opts+'</select>':'')+'<div class="dd-add-row"><span class="dd-add-price"></span><button type="button">Add to cart</button></div>';
