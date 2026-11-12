@@ -8,7 +8,7 @@ const BRAND = '3D Design & Supply';
 const clean = (s: string) => (s || '').replace(/\s+/g, ' ').trim();
 
 // GET -> JSONL product feed for ChatGPT shopping (one row per color variation).
-export const GET: APIRoute = async ({ locals }) => {
+export async function buildFeed(locals: any): Promise<string | Response> {
   const tok = token(locals);
   if (!tok) return new Response('not configured', { status: 503 });
 
@@ -48,7 +48,13 @@ export const GET: APIRoute = async ({ locals }) => {
     }
   }
 
-  return new Response(lines.join('\n') + '\n', {
+  return lines.join('\n') + '\n';
+}
+
+export const GET: APIRoute = async ({ locals }) => {
+  const body = await buildFeed(locals);
+  if (body instanceof Response) return body;
+  return new Response(body, {
     headers: { 'Content-Type': 'application/jsonl; charset=utf-8', 'Cache-Control': 'public, max-age=3600' },
   });
 };
