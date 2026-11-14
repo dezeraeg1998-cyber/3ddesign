@@ -1,9 +1,9 @@
 import type { APIRoute } from 'astro';
-import { square, token, json, LOCATION_ID, SITE } from '../../square';
+import { square, token, json, LOCATION_ID, SITE, offerValid, OFFER_PCT } from '../../square';
 
 export const config = { runtime: 'edge' };
 
-// POST { items: [{ variationId, qty }] } -> { url } of a Square checkout page.
+// POST { items: [{ variationId, qty }], offer?, email? } -> { url } of a Square checkout page.
 // Prices always come from the Square catalog, never from the browser.
 export const POST: APIRoute = async ({ request, locals }) => {
   const tok = token(locals);
@@ -22,11 +22,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
     lineItems.push({ catalog_object_id: id, quantity: String(qty) });
   }
 
+  const order: any = { location_id: LOCATION_ID, line_items: lineItems };
+  if (await offerValid(tok, body?.offer)) {
+    order.discounts = [{ uid: 'welcome', name: 'Welcome offer 25% off', percentage: OFFER_PCT, scope: 'ORDER' }];
+  }
+  const email = String(body?.email || '').trim();
   const r = await square(tok, '/online-checkout/payment-links', {
     method: 'POST',
     body: JSON.stringify({
       idempotency_key: crypto.randomUUID(),
-      order: { location_id: LOCATION_ID, line_items: lineItems },
+      order,
+      ...(/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(email) ? { pre_populated_data: { buyer_email: email } } : {}),
       checkout_options: {
         ask_for_shipping_address: true,
         redirect_url: `${SITE}/?order=thanks`,
