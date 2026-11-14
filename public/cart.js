@@ -3,9 +3,6 @@
   var API='/cart-api/api',KEY='ddCart',d=document;
   function load(){try{return JSON.parse(localStorage.getItem(KEY))||[];}catch(e){return [];}}
   function save(c){try{localStorage.setItem(KEY,JSON.stringify(c));}catch(e){}render();}
-  function ga(){try{if(window.gtag)gtag.apply(null,arguments);}catch(e){}}
-  function gaItems(c){return c.map(function(x){return{item_id:x.v,item_name:x.name,item_variant:x.variant,price:x.price/100,quantity:x.qty};});}
-  function offer(){try{var o=JSON.parse(localStorage.getItem('ddOffer'));return o&&o.exp>Date.now()?o:null;}catch(e){return null;}}
   function money(c){return '$'+(c/100).toFixed(2);}
   function esc(s){return String(s).replace(/[&<>"]/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m];});}
   var st=d.createElement('style');st.textContent=
@@ -31,11 +28,6 @@
   '.dd-add select{padding:12px 14px;border:2px solid var(--dd-ink);border-radius:12px;font:500 16px "DM Sans",sans-serif;background:#fff;color:var(--dd-ink)}'+
   '.dd-add-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.dd-add-price{font:700 26px "Fredoka",sans-serif}'+
   '.dd-add button{padding:14px 26px;border:3px solid var(--dd-ink);border-radius:999px;background:var(--dd-orange);color:#fff;font:700 18px "DM Sans",sans-serif;cursor:pointer;box-shadow:0 4px 0 var(--dd-ink)}'+
-  '.dd-cart-disc{display:flex;justify-content:space-between;font-weight:700;color:#1F7A3A;margin-top:6px}.dd-cart-disc:empty{display:none}'+
-  '.dd-cart-email{width:100%;box-sizing:border-box;padding:12px 14px;border:2px solid var(--dd-ink);border-radius:12px;font:500 15px "DM Sans",sans-serif;margin:0 0 12px;background:#fff;color:var(--dd-ink)}'+
-  '.dd-offer{position:fixed;left:12px;right:12px;bottom:12px;max-width:520px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 14px 12px 18px;background:var(--dd-orange);color:#fff;border:3px solid var(--dd-ink);border-radius:18px;box-shadow:0 5px 0 var(--dd-ink);z-index:1001;font:700 15px/1.3 "DM Sans",sans-serif}'+
-  '.dd-offer b{font:700 22px "Fredoka",sans-serif;background:var(--dd-ink);padding:2px 10px;border-radius:10px;font-variant-numeric:tabular-nums}.dd-offer span{flex:1}.dd-offer button{border:0;background:none;color:#fff;font-size:22px;cursor:pointer;line-height:1}body.dd-cart-open .dd-offer{display:none}'+
-  '.dd-cookie{position:fixed;left:12px;bottom:96px;max-width:360px;padding:14px 16px;background:#fff;color:var(--dd-ink);border:2px solid var(--dd-ink);border-radius:14px;box-shadow:0 4px 0 var(--dd-ink);z-index:1000;font:500 14px/1.4 "DM Sans",sans-serif}.dd-cookie button{margin-top:10px;padding:8px 18px;border:2px solid var(--dd-ink);border-radius:999px;background:var(--dd-orange);color:#fff;font-weight:700;cursor:pointer}'+
   '.dd-toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,140%);background:var(--dd-ink);color:#fff;padding:14px 20px;border-radius:999px;font:700 15px "DM Sans",sans-serif;z-index:1004;transition:transform .3s ease;white-space:nowrap}.dd-toast.on{transform:translate(-50%,0)}';
   d.head.appendChild(st);
 
@@ -48,14 +40,9 @@
   /* drawer */
   var ov=d.createElement('div');ov.className='dd-cart-ov';
   var dr=d.createElement('aside');dr.className='dd-cart';dr.setAttribute('aria-label','Shopping cart');
-  dr.innerHTML='<div class="dd-cart-h"><span>Your cart</span><button type="button" class="dd-cart-x" aria-label="Close cart">&times;</button></div><div class="dd-cart-list"></div><div class="dd-cart-f"><div class="dd-cart-row"><span>Subtotal</span><span class="dd-cart-sub">$0.00</span></div><div class="dd-cart-disc"></div><div class="dd-cart-note">Free shipping. Taxes calculated at checkout.</div><input type="email" class="dd-cart-email" placeholder="Email (we\'ll save your cart)" autocomplete="email"><button type="button" class="dd-cart-go">Checkout</button><div class="dd-cart-err" role="alert"></div></div>';
+  dr.innerHTML='<div class="dd-cart-h"><span>Your cart</span><button type="button" class="dd-cart-x" aria-label="Close cart">&times;</button></div><div class="dd-cart-list"></div><div class="dd-cart-f"><div class="dd-cart-row"><span>Subtotal</span><span class="dd-cart-sub">$0.00</span></div><div class="dd-cart-note">Free shipping. Taxes calculated at checkout.</div><button type="button" class="dd-cart-go">Checkout</button><div class="dd-cart-err" role="alert"></div></div>';
   d.body.appendChild(ov);d.body.appendChild(dr);
-  var list=dr.querySelector('.dd-cart-list'),sub=dr.querySelector('.dd-cart-sub'),go=dr.querySelector('.dd-cart-go'),err=dr.querySelector('.dd-cart-err'),disc=dr.querySelector('.dd-cart-disc'),em=dr.querySelector('.dd-cart-email');
-  try{em.value=localStorage.getItem('ddEmail')||'';}catch(e){}
-  function okEmail(v){return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(v);}
-  function lead(){var v=em.value.trim(),c=load();if(!okEmail(v)||!c.length)return;try{localStorage.setItem('ddEmail',v);}catch(e){}
-    fetch(API+'/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v,items:c.map(function(x){return{name:x.name,variant:x.variant,qty:x.qty};})}),keepalive:true}).catch(function(){});}
-  em.addEventListener('change',lead);
+  var list=dr.querySelector('.dd-cart-list'),sub=dr.querySelector('.dd-cart-sub'),go=dr.querySelector('.dd-cart-go'),err=dr.querySelector('.dd-cart-err');
   function open(o){d.body.classList.toggle('dd-cart-open',o);if(o)err.textContent='';}
   btn.addEventListener('click',function(){open(true);});ov.addEventListener('click',function(){open(false);});
   dr.querySelector('.dd-cart-x').addEventListener('click',function(){open(false);});
@@ -67,12 +54,12 @@
     c.forEach(function(x,i){n+=x.qty;t+=x.price*x.qty;
       h+='<div class="dd-ci"><img alt="" src="'+esc(x.img||'')+'"><div><a href="'+esc(x.url||'#')+'">'+esc(x.name)+'</a><small>'+esc(x.variant)+'</small><div class="dd-qty"><button type="button" data-i="'+i+'" data-d="-1" aria-label="Less">−</button><span>'+x.qty+'</span><button type="button" data-i="'+i+'" data-d="1" aria-label="More">+</button></div></div><div class="dd-ci-r">'+money(x.price*x.qty)+'<button type="button" data-r="'+i+'">Remove</button></div></div>';});
     list.innerHTML=h||'<div class="dd-cart-empty">Your cart is empty.</div>';
-    sub.textContent=money(t);var o=offer();disc.innerHTML=o&&t?'<span>Welcome offer 25% off</span><span>−'+money(Math.round(t*.25))+'</span>':'';btn.querySelector('b').textContent=n?String(n):'';go.disabled=!n;
+    sub.textContent=money(t);btn.querySelector('b').textContent=n?String(n):'';go.disabled=!n;
   }
   list.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var c=load();
     if(b.dataset.r!=null){c.splice(+b.dataset.r,1);}else if(b.dataset.i!=null){var x=c[+b.dataset.i];x.qty=Math.max(1,Math.min(99,x.qty+(+b.dataset.d)));}save(c);});
-  go.addEventListener('click',function(){var c=load();if(!c.length)return;lead();var o=offer();ga('event','begin_checkout',{currency:'USD',items:gaItems(c)});try{localStorage.setItem('ddLastOrder',JSON.stringify(c));}catch(e){}go.disabled=true;go.textContent='Opening secure checkout…';err.textContent='';
-    fetch(API+'/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:c.map(function(x){return{variationId:x.v,qty:x.qty};}),offer:o?o.token:null,email:em.value.trim()})})
+  go.addEventListener('click',function(){var c=load();if(!c.length)return;go.disabled=true;go.textContent='Opening secure checkout…';err.textContent='';
+    fetch(API+'/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:c.map(function(x){return{variationId:x.v,qty:x.qty};})})})
     .then(function(r){return r.json().then(function(j){if(!r.ok||!j.url)throw j;return j;});})
     .then(function(j){location.href=j.url;})
     .catch(function(){err.textContent='Checkout is unavailable right now. Please try again in a moment.';go.disabled=false;go.textContent='Checkout';});});
@@ -80,24 +67,7 @@
   function toast(m){var t=d.createElement('div');t.className='dd-toast';t.textContent=m;d.body.appendChild(t);requestAnimationFrame(function(){t.classList.add('on');});setTimeout(function(){t.classList.remove('on');setTimeout(function(){t.remove();},400);},2600);}
 
   /* order complete */
-  if(/[?&]order=thanks/.test(location.search)){try{var lo=JSON.parse(localStorage.getItem('ddLastOrder')||'[]');if(lo.length)ga('event','purchase',{transaction_id:'web-'+Date.now(),currency:'USD',value:lo.reduce(function(a,x){return a+x.price*x.qty;},0)/100,items:gaItems(lo)});localStorage.removeItem('ddLastOrder');localStorage.removeItem('ddOffer');localStorage.removeItem(KEY);}catch(e){}setTimeout(function(){toast('Thank you! Your order is in. ♥');},600);history.replaceState(null,'',location.pathname);}
-  /* cookie notice */
-  try{if(!localStorage.getItem('ddCookieOk')){var ck=d.createElement('div');ck.className='dd-cookie';ck.innerHTML='We use cookies to keep your cart, remember your offer and understand how people use our site.<br><button type="button">OK</button>';d.body.appendChild(ck);ck.querySelector('button').addEventListener('click',function(){try{localStorage.setItem('ddCookieOk','1');}catch(e){}ck.remove();});}}catch(e){}
-
-  /* 25% off welcome offer: first visit only, 15 minute countdown */
-  var bar=null,tick=null;
-  function showOffer(){var o=offer();if(!o)return;
-    bar=d.createElement('div');bar.className='dd-offer';bar.setAttribute('role','status');
-    bar.innerHTML='<span>Welcome! Take <u>25% off</u> your order if you check out in</span><b></b><button type="button" aria-label="Hide">&times;</button>';
-    d.body.appendChild(bar);var b=bar.querySelector('b');
-    bar.querySelector('button').addEventListener('click',function(){bar.style.display='none';});
-    bar.querySelector('span').addEventListener('click',function(){open(true);});
-    function step(){var ms=o.exp-Date.now();if(ms<=0){clearInterval(tick);bar.remove();try{localStorage.removeItem('ddOffer');}catch(e){}render();return;}
-      var m=Math.floor(ms/60000),s2=Math.floor(ms%60000/1000);b.textContent=m+':'+(s2<10?'0':'')+s2;}
-    step();tick=setInterval(step,1000);}
-  var seen=null;try{seen=localStorage.getItem('ddSeen');localStorage.setItem('ddSeen','1');}catch(e){seen='1';}
-  if(!seen&&!/[?&]order=thanks/.test(location.search)){fetch(API+'/offer').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){try{localStorage.setItem('ddOffer',JSON.stringify(j));}catch(e){}showOffer();render();ga('event','view_promotion',{promotion_name:'Welcome 25% off'});}).catch(function(){});}
-  else showOffer();
+  if(/[?&]order=thanks/.test(location.search)){try{localStorage.removeItem(KEY);}catch(e){}setTimeout(function(){toast('Thank you! Your order is in. ♥');},600);history.replaceState(null,'',location.pathname);}
   render();
 
   /* product page: color picker + add to cart */
@@ -117,6 +87,6 @@
     var buy=slot.parentNode.querySelector('a.btn:not(.btn-outline)');if(buy&&/buy now/i.test(buy.textContent))buy.style.display='none';
     slot.querySelector('button').addEventListener('click',function(){var v=cur(),c=load(),f=c.find(function(x){return x.v===v.id;});
       if(f)f.qty=Math.min(99,f.qty+1);else c.push({v:v.id,name:name.trim(),variant:vs.length>1?v.name:'',price:v.price,img:imgEl?(imgEl.currentSrc||imgEl.src):'',url:location.pathname,qty:1});
-      save(c);ga('event','add_to_cart',{currency:'USD',value:v.price/100,items:[{item_id:v.id,item_name:name.trim(),item_variant:v.name,price:v.price/100,quantity:1}]});btn.classList.remove('bump');void btn.offsetWidth;btn.classList.add('bump');toast('Added to cart');});
+      save(c);btn.classList.remove('bump');void btn.offsetWidth;btn.classList.add('bump');toast('Added to cart');});
   }).catch(function(){});
 })();
